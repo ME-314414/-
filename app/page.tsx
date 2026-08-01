@@ -50,6 +50,14 @@ const importedCollections = [
 type ArchiveId = "commercial" | "character" | "environment" | typeof importedCollections[number]["id"];
 type ImportedArchiveId = typeof importedCollections[number]["id"];
 
+function responsiveImageProps(item: WorkItem) {
+  if (item.custom || !item.src.startsWith("/assets/")) return {};
+  return {
+    srcSet: `${item.src.replace("/assets/", "/assets/mobile/")} 720w, ${item.src} 1200w`,
+    sizes: "(max-width: 620px) calc(100vw - 48px), (max-width: 1000px) 46vw, 34vw",
+  };
+}
+
 export default function Home() {
   const [navFloating, setNavFloating] = useState(false);
   const navFloatingRef = useRef(false);
@@ -107,7 +115,8 @@ export default function Home() {
       const target = Math.floor(Math.random() * (index + 1));
       [shuffled[index], shuffled[target]] = [shuffled[target], shuffled[index]];
     }
-    setMarqueeWorks(shuffled.slice(0, 14));
+    const mobileViewport = window.matchMedia("(max-width: 620px)").matches;
+    setMarqueeWorks(shuffled.slice(0, mobileViewport ? 8 : 14));
   }, [allPortfolioWorks]);
 
   useEffect(() => {
@@ -118,7 +127,7 @@ export default function Home() {
         setMarqueeMounted(true);
         observer.disconnect();
       }
-    }, { rootMargin: "600px 0px", threshold: 0 });
+    }, { rootMargin: window.innerWidth <= 620 ? "160px 0px" : "600px 0px", threshold: 0 });
     observer.observe(marquee);
     return () => observer.disconnect();
   }, [marqueeMounted]);
@@ -323,7 +332,7 @@ export default function Home() {
               <div className="work-marquee-group" key={group} aria-hidden={group === 1}>
                 {marqueeWorks.map((item, index) => (
                   <button className={`marquee-card card-shape-${index % 5}`} type="button" key={`${group}-${item.id}`} onClick={() => setSelectedWork(item)} aria-label={`查看 ${item.brand} ${item.title}`} tabIndex={group === 1 ? -1 : 0}>
-                    <img src={item.src} alt="" width={item.width ?? (item.custom ? undefined : 1086)} height={item.height ?? (item.custom ? undefined : 1448)} loading="lazy" decoding="async" />
+                    <img src={item.src} {...responsiveImageProps(item)} alt="" width={item.width ?? (item.custom ? undefined : 1086)} height={item.height ?? (item.custom ? undefined : 1448)} loading="lazy" decoding="async" />
                     <span>{item.brand}</span>
                   </button>
                 ))}
@@ -357,7 +366,7 @@ export default function Home() {
               <div className={`showcase-grid${showAllWork ? " is-complete" : ""}`}>
                 {(showAllWork ? visibleWorks : visibleWorks.slice(0, 6)).map((item, index) => (
                   <button className={`showcase-item span-${index % 7}`} key={item.id} type="button" onClick={() => setSelectedWork(item)} aria-label={`查看 ${item.brand} ${item.title}`}>
-                    <img src={item.src} alt={`${item.brand} ${item.title}`} width={item.width ?? (item.custom ? undefined : 1086)} height={item.height ?? (item.custom ? undefined : 1448)} loading="lazy" decoding="async" />
+                    <img src={item.src} {...responsiveImageProps(item)} alt={`${item.brand} ${item.title}`} width={item.width ?? (item.custom ? undefined : 1086)} height={item.height ?? (item.custom ? undefined : 1448)} loading="lazy" decoding="async" />
                     <span className="showcase-index">{item.custom ? "NEW" : item.id}</span>
                     <span className="showcase-overlay"><small>{item.brand}</small><b>{item.title}</b><i>VIEW ↗</i></span>
                   </button>
@@ -387,7 +396,7 @@ export default function Home() {
                   <div className={`showcase-grid${!hasMore ? " is-complete" : ""}`}>
                     {displayedWorks.map((item, index) => (
                       <button className={`showcase-item span-${index % 7}`} key={item.id} type="button" onClick={() => setSelectedWork(item)} aria-label={`查看 ${item.brand} ${item.title}`}>
-                        <img src={item.src} alt={`${item.brand} ${item.title}`} width={item.width} height={item.height} loading="lazy" decoding="async" />
+                        <img src={item.src} {...responsiveImageProps(item)} alt={`${item.brand} ${item.title}`} width={item.width} height={item.height} loading="lazy" decoding="async" />
                         <span className="showcase-index">{item.id.replace(/^[^-]+-/, "")}</span>
                         <span className="showcase-overlay"><small>{item.brand}</small><b>{item.title}</b><i>VIEW ↗</i></span>
                       </button>

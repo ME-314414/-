@@ -10,12 +10,21 @@ ScrollTrigger.config({ limitCallbacks: true, ignoreMobileResize: true });
 export default function MotionDirector() {
   useEffect(() => {
     const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
     const root = document.documentElement;
     root.classList.add("motion-ready");
 
     if (reduceMotion) {
       gsap.set(".opening-screen", { display: "none" });
-      return () => root.classList.remove("motion-ready");
+      const gentleReveal = gsap.fromTo(
+        [".nav", ".hero-overline", ".hero-title-top", ".hero-title-bottom", ".hero-title-foot", ".hero-side-copy", ".hero-disciplines > div", ".round-link", ".studio-launch"],
+        { opacity: 0, y: isMobile ? 12 : 18 },
+        { opacity: 1, y: 0, duration: 0.65, stagger: 0.045, ease: "power2.out" },
+      );
+      return () => {
+        gentleReveal.kill();
+        root.classList.remove("motion-ready");
+      };
     }
 
     const previousOverflow = document.body.style.overflow;
@@ -43,23 +52,43 @@ export default function MotionDirector() {
         },
       });
 
-      opening
-        .fromTo(".opening-kicker", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.15)
-        .fromTo(".opening-name span", { yPercent: 115 }, { yPercent: 0, duration: 1.05, ease: "expo.out" }, 0.28)
-        .fromTo(".opening-name small", { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.05, ease: "expo.out" }, 0.4)
-        .fromTo(".opening-progress i", { scaleX: 0 }, { scaleX: 1, duration: 1.35, ease: "power2.inOut" }, 0.25)
-        .to(".opening-copy", { y: -34, opacity: 0, duration: 0.62, ease: "power3.in" }, 1.48)
-        .to(".opening-panel-top", { yPercent: -102, duration: 1.35 }, 1.72)
-        .to(".opening-panel-bottom", { yPercent: 102, duration: 1.35 }, 1.72)
-        .to(".hero-video", { scale: 1, duration: 2.05, ease: "power3.out" }, 1.75)
-        .to(".nav", { opacity: 1, duration: 0.85, ease: "power3.out" }, 2.12)
-        .to(".hero-title-top", { yPercent: 0, scaleY: 1, duration: 1.48, ease: "expo.out" }, 2.18)
-        .to(".hero-title-bottom", { yPercent: 0, scaleY: 1, duration: 1.58, ease: "expo.out" }, 2.34)
-        .to(".hero-overline", { opacity: 1, y: 0, duration: 0.95, ease: "power3.out" }, 2.6)
-        .fromTo(".hero-title-foot", { y: 24 }, { opacity: 1, y: 0, duration: 1.05, ease: "power3.out" }, 2.75)
-        .fromTo(".hero-side-copy", { x: 55 }, { opacity: 1, x: 0, duration: 1.25, ease: "power4.out" }, 2.68)
-        .fromTo(".hero-disciplines > div", { y: 25 }, { opacity: 1, y: 0, duration: 0.85, stagger: 0.12, ease: "power3.out" }, 2.88)
-        .fromTo([".round-link", ".studio-launch"], { scale: 0.82 }, { opacity: 1, scale: 1, duration: 1, stagger: 0.14, ease: "power3.out" }, 3.02);
+      if (isMobile) {
+        opening
+          .fromTo(".opening-kicker", { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.48, ease: "power3.out" }, 0.08)
+          .fromTo(".opening-name span", { yPercent: 112 }, { yPercent: 0, duration: 0.72, ease: "expo.out" }, 0.16)
+          .fromTo(".opening-name small", { yPercent: 80, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.62, ease: "power3.out" }, 0.27)
+          .fromTo(".opening-progress i", { scaleX: 0 }, { scaleX: 1, duration: 0.82, ease: "power2.inOut" }, 0.18)
+          .to(".opening-copy", { y: -18, opacity: 0, duration: 0.36, ease: "power3.in" }, 0.94)
+          .to(".opening-panel-top", { yPercent: -102, duration: 0.72 }, 1.08)
+          .to(".opening-panel-bottom", { yPercent: 102, duration: 0.72 }, 1.08)
+          .to(".hero-video", { scale: 1, duration: 1.1, ease: "power3.out" }, 1.02)
+          .to(".nav", { opacity: 1, duration: 0.45, ease: "power3.out" }, 1.24)
+          .to(".hero-title-top", { yPercent: 0, scaleY: 1, duration: 0.82, ease: "expo.out" }, 1.26)
+          .to(".hero-title-bottom", { yPercent: 0, scaleY: 1, duration: 0.9, ease: "expo.out" }, 1.36)
+          .to(".hero-overline", { opacity: 1, y: 0, duration: 0.52, ease: "power3.out" }, 1.48)
+          .fromTo(".hero-title-foot", { y: 14 }, { opacity: 1, y: 0, duration: 0.55, ease: "power3.out" }, 1.58)
+          .fromTo(".hero-side-copy", { x: 24 }, { opacity: 1, x: 0, duration: 0.72, ease: "power4.out" }, 1.62)
+          .fromTo(".hero-disciplines > div", { y: 14 }, { opacity: 1, y: 0, duration: 0.5, stagger: 0.07, ease: "power3.out" }, 1.72)
+          .fromTo([".round-link", ".studio-launch"], { scale: 0.88 }, { opacity: 1, scale: 1, duration: 0.55, stagger: 0.08, ease: "power3.out" }, 1.78);
+      } else {
+        opening
+          .fromTo(".opening-kicker", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9, ease: "power3.out" }, 0.15)
+          .fromTo(".opening-name span", { yPercent: 115 }, { yPercent: 0, duration: 1.05, ease: "expo.out" }, 0.28)
+          .fromTo(".opening-name small", { yPercent: 115, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1.05, ease: "expo.out" }, 0.4)
+          .fromTo(".opening-progress i", { scaleX: 0 }, { scaleX: 1, duration: 1.35, ease: "power2.inOut" }, 0.25)
+          .to(".opening-copy", { y: -34, opacity: 0, duration: 0.62, ease: "power3.in" }, 1.48)
+          .to(".opening-panel-top", { yPercent: -102, duration: 1.35 }, 1.72)
+          .to(".opening-panel-bottom", { yPercent: 102, duration: 1.35 }, 1.72)
+          .to(".hero-video", { scale: 1, duration: 2.05, ease: "power3.out" }, 1.75)
+          .to(".nav", { opacity: 1, duration: 0.85, ease: "power3.out" }, 2.12)
+          .to(".hero-title-top", { yPercent: 0, scaleY: 1, duration: 1.48, ease: "expo.out" }, 2.18)
+          .to(".hero-title-bottom", { yPercent: 0, scaleY: 1, duration: 1.58, ease: "expo.out" }, 2.34)
+          .to(".hero-overline", { opacity: 1, y: 0, duration: 0.95, ease: "power3.out" }, 2.6)
+          .fromTo(".hero-title-foot", { y: 24 }, { opacity: 1, y: 0, duration: 1.05, ease: "power3.out" }, 2.75)
+          .fromTo(".hero-side-copy", { x: 55 }, { opacity: 1, x: 0, duration: 1.25, ease: "power4.out" }, 2.68)
+          .fromTo(".hero-disciplines > div", { y: 25 }, { opacity: 1, y: 0, duration: 0.85, stagger: 0.12, ease: "power3.out" }, 2.88)
+          .fromTo([".round-link", ".studio-launch"], { scale: 0.82 }, { opacity: 1, scale: 1, duration: 1, stagger: 0.14, ease: "power3.out" }, 3.02);
+      }
 
       gsap.timeline({
         scrollTrigger: {

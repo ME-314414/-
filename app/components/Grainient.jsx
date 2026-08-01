@@ -109,7 +109,8 @@ export default function Grainient({
     const container = containerRef.current;
     if (!container) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const dpr = window.innerWidth >= 1440 ? 0.8 : Math.min(window.devicePixelRatio || 1, 1);
+    const mobileRenderer = window.innerWidth <= 767;
+    const dpr = mobileRenderer ? 0.65 : window.innerWidth >= 1440 ? 0.8 : Math.min(window.devicePixelRatio || 1, 1);
     const renderer = new Renderer({ webgl: 2, alpha: true, antialias: false, dpr });
     const gl = renderer.gl;
     const canvas = gl.canvas;
@@ -141,7 +142,7 @@ export default function Grainient({
     let isPageVisible = !document.hidden;
     const t0 = performance.now();
     let lastFrame = 0;
-    const frameInterval = 1000 / 30;
+    const frameInterval = 1000 / (mobileRenderer ? 20 : 30);
     const loop = (t) => {
       raf=requestAnimationFrame(loop);
       if (t-lastFrame < frameInterval) return;

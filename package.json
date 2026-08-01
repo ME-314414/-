@@ -9,6 +9,7 @@
     "dev": "vite --host 127.0.0.1",
     "build": "vite build",
     "preview": "vite preview --host 127.0.0.1",
+    "images:mobile": "node scripts/generate-mobile-images.mjs",
     "test": "npm run build && node --test tests/rendered-html.test.mjs"
   },
   "dependencies": {
@@ -23,6 +24,7 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "6.0.2",
+    "sharp": "^0.34.4",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
     "vite": "8.0.13"
