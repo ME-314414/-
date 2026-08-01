@@ -102,7 +102,20 @@ export default function MotionDirector() {
 
       gsap.fromTo(".ability .section-label", { x: -45, opacity: 0 }, { x: 0, opacity: 1, duration: 1.1, ease: "power4.out", scrollTrigger: replay(".ability", "top 84%", "bottom 14%") });
       gsap.fromTo(".ability-title > *", { y: 60, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, stagger: 0.16, ease: "power4.out", scrollTrigger: replay(".ability-title", "top 82%", "bottom 18%") });
-      gsap.fromTo(".strength-card", { y: 90, opacity: 0, clipPath: "inset(100% 0 0 0)" }, { y: 0, opacity: 1, clipPath: "inset(0% 0 0 0)", duration: 1.35, stagger: 0.14, ease: "power4.out", scrollTrigger: replay(".strength-grid", "top 84%", "bottom 16%") });
+      gsap.fromTo(".strength-card", { y: 90, opacity: 0, clipPath: "inset(100% 0 0 0)" }, {
+        y: 0,
+        opacity: 1,
+        clipPath: "inset(0% 0 0 0)",
+        duration: 1.35,
+        stagger: 0.14,
+        ease: "power4.out",
+        scrollTrigger: {
+          ...replay(".strength-grid", "top 84%", "bottom 16%"),
+          // Keep the complete four-card system visible after its reveal. Reversing
+          // a staggered timeline hid card 01 first while the grid was still onscreen.
+          toggleActions: "play none restart none",
+        },
+      });
 
       gsap.fromTo(".contact-inner > *", { y: 85, opacity: 0 }, { y: 0, opacity: 1, duration: 1.35, stagger: 0.15, ease: "power4.out", scrollTrigger: replay(".contact-section", "top 72%", "bottom 15%") });
       gsap.to(".contact-glow", { yPercent: -18, ease: "none", scrollTrigger: { trigger: ".contact-section", start: "top bottom", end: "bottom top", scrub: 1.4 } });

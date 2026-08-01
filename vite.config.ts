@@ -1,10 +1,16 @@
-import vinext from "vinext";
 import { defineConfig } from "vite";
-import { sites } from "./build/sites-vite-plugin";
+import react from "@vitejs/plugin-react";
 
 export default defineConfig({
-  plugins: [vinext(), sites()],
+  plugins: [react()],
   server: {
     host: "127.0.0.1",
+  },
+  preview: {
+    host: "127.0.0.1",
+  },
+  build: {
+    target: "es2020",
+    sourcemap: false,
   },
 });
